@@ -57,7 +57,7 @@ jobs:
     needs: download
     runs-on: [self-hosted, linux, x64]
     steps:
-    - run: source env.yaml; podman build -t $IMAGE_PATH dockerfile/Dockerfile ; podman push $IMAGE_PATH
+    - run: source env.yaml; podman build -t $IMAGE_PATH dockerfile ; podman push $IMAGE_PATH
   deploy:
     needs: imagebuild
     runs-on: [self-hosted, linux, x64]
