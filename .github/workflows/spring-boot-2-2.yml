@@ -40,6 +40,11 @@ jobs:
       with:
         name: dockerfile
         path: Dockerfile
+    - name: Upload a Manifest
+      uses: actions/upload-artifact@v4.0.0
+      with:
+        name: manifest
+        path: manifest
   download:
     needs: build
     runs-on: [self-hosted, linux, x64]
@@ -47,16 +52,16 @@ jobs:
     - name: Download All Artifacts
       uses: actions/download-artifact@v4
       with:
-        path: build
+        path: ./
   imagebuild:
     needs: download
     runs-on: [self-hosted, linux, x64]
     steps:
-    - run: podman build -t docker.io/ski111/spring-music build/build/;  podman push docker.io/ski111/spring-music;
+    - run: source env.yaml; podman build -t $IMAGE_PATH dockerfile/Dockerfile ; podman push $IMAGE_PATH
   deploy:
     needs: imagebuild
     runs-on: [self-hosted, linux, x64]
     steps:
-    - run: kubectl rollout restart deployment/spring-music
+    - run: source env.yaml; IMAGE_PATH="${IMAGE_PATH}" yq e '.spec.template.spec.containers[0].image = env(IMAGE_PATH)' manifest/deployment.yaml | kubectl apply -f -; kubectl apply -f manifest/service.yaml; INGRESS_HOST="${INGRESS_HOST}" yq e '.spec.rules[0].host = env(INGRESS_HOST)' manifest/ingress.yaml | kubectl apply -f -; kubectl rollout restart deployment/spring-music
 
 
