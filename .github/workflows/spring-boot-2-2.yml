@@ -35,6 +35,11 @@ jobs:
       with:
         name: build
         path: build/libs/spring-music-1.0.jar
+    - name: Upload a Dockerfile
+      uses: actions/upload-artifact@v4.0.0
+      with:
+        name: dockerfile
+        path: Dockerfile
   download:
     needs: build
     runs-on: [self-hosted, linux, x64]
@@ -43,4 +48,15 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: build
-    - run: ls -l; pwd; sleep 10;
+  imagebuild:
+    needs: download
+    runs-on: [self-hosted, linux, x64]
+    steps:
+    - run: podman build -t docker.io/ski111/spring-music build/build/;  podman push docker.io/ski111/spring-music;
+  deploy:
+    needs: imagebuild
+    runs-on: [self-hosted, linux, x64]
+    steps:
+    - run: kubectl apply -f build/build/manifest/deployment.yaml
+
+
