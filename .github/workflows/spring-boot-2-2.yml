@@ -35,3 +35,14 @@ jobs:
       with:
         name: build
         path: build/libs/spring-music-1.0.jar
+  download:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download All Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: my-artifact
+        pattern: my-artifact-*
+        merge-multiple: true
+    - run: ls -l
