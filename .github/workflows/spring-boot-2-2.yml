@@ -37,7 +37,7 @@ jobs:
         path: build/libs/spring-music-1.0.jar
   download:
     needs: build
-    runs-on: ap-inception-nfs
+    runs-on: [self-hosted, linux, x64]
     steps:
     - name: Download All Artifacts
       uses: actions/download-artifact@v4
