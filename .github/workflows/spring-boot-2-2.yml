@@ -53,11 +53,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: ./
-    - run: cp build/spring-music-1.0.jar dockerfile
   imagebuild:
     needs: download
     runs-on: [self-hosted, linux, x64]
     steps:
+    - run: cp build/spring-music-1.0.jar dockerfile
     - run: source env.yaml; podman build -t $IMAGE_PATH dockerfile ; podman push $IMAGE_PATH
   deploy:
     needs: imagebuild
