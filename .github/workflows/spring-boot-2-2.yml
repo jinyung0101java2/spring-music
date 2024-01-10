@@ -57,6 +57,6 @@ jobs:
     needs: imagebuild
     runs-on: [self-hosted, linux, x64]
     steps:
-    - run: kubectl apply -f build/build/manifest/deployment.yaml
+    - run: kubectl rollout restart deployment/spring-music
 
 
